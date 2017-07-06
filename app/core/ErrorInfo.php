@@ -28,8 +28,8 @@
 			return $result;
 		}
 		
-		public function GetMetaErrorItem($code, $data){
-			return array('code' => $code, 'msg' => ErrorInfo::GetMessage($code, $data));
+		public function GetMetaErrorItem($code, $data = array(), $field = ''){
+			return array('code' => $code, 'context' => $field, 'msg' => ErrorInfo::GetMessage($code, $data));
 		}
 		
 		private static $messages = array(

@@ -62,21 +62,21 @@
 		
 		private function Check_DefaultText($data){
 			if(empty($data)){
-				$this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_EMPTY, array($this->field)); 
+				$this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_EMPTY, array($this->field), $this->field); 
 			}
 			
 			if(mb_strlen($data) < 2 || mb_strlen($data) >= 255){
-				$this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_OUT_OF_RANGE_STR, array($this->field, 2, 255)); 
+				$this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_OUT_OF_RANGE_STR, array($this->field, 2, 255), $this->field); 
 			}
 		}
 		
 		private function Check_UNumberShort($data){
 			$data = intval($data); 
 			if(!$data){
-				$this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_NOT_CORRECT, array($this->field)); 
+				$this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_NOT_CORRECT, array($this->field), $this->field); 
 			}
 			elseif($data < 1 || $data > 255){
-				$this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_OUT_OF_RANGE, array($this->field, 1, 255)); 
+				$this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_OUT_OF_RANGE, array($this->field, 1, 255), $this->field); 
 			}
 		}
 		
