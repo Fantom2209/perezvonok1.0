@@ -8,21 +8,36 @@
 		const FIELD_EMPTY = 1;
 		const FIELD_NOT_CORRECT = 2;
 		const FIELD_OUT_OF_RANGE = 3;
+		const FIELD_OUT_OF_RANGE_STR = 4;
 		
 		
-		public static function GetMessage($code){
-			if(!isset($message[$code])){
+		public static function GetMessage($code, $data = array()){
+			if(!isset(self::$messages[$code])){
 				$code = 0;
 			}
 			
-			return $message[$code];
+			$result = self::$messages[$code];
+			if(count($data) > 0){
+				$patterns = array();
+				foreach($data as $key => $item){
+					$patterns[] = '{'.$key.'}';
+				}
+				$result = str_replace($patterns, $data, $result);
+			}
+			
+			return $result;
 		}
 		
-		$mssages = array(
-			SELF::UNDEFINED_ERROR => 'Произошла неопределенная ошибка!',
-			SELF::FIELD_EMPTY => 'Поле {field} не может быть пустым!',
-			SELF::FIELD_NOT_CORRECT => 'Поле {field} имеет некорректное значение!',
-			SELF::FIELD_OUT_OF_RANGE_STR => 'Некорректное кол-во символов в поле {field}! Минимум: {min} - Максимум: {max}!',
+		public function GetMetaErrorItem($code, $data){
+			return array('code' => $code, 'msg' => ErrorInfo::GetMessage($code, $data));
+		}
+		
+		private static $messages = array(
+			SELF::UNDEFINED_ERROR => 'РџСЂРѕРёР·РѕС€Р»Р° РЅРµРѕРїСЂРµРґРµР»РµРЅРЅР°СЏ РѕС€РёР±РєР°!',
+			SELF::FIELD_EMPTY => 'РџРѕР»Рµ "{0}" РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј!',
+			SELF::FIELD_NOT_CORRECT => 'РџРѕР»Рµ "{0}" РёРјРµРµС‚ РЅРµРєРѕСЂСЂРµРєС‚РЅРѕРµ Р·РЅР°С‡РµРЅРёРµ!',
+			SELF::FIELD_OUT_OF_RANGE_STR => 'РќРµРєРѕСЂСЂРµРєС‚РЅРѕРµ РєРѕР»-РІРѕ СЃРёРјРІРѕР»РѕРІ РІ РїРѕР»Рµ "{0}"! РњРёРЅРёРјСѓРј: {1} - РњР°РєСЃРёРјСѓРј: {2}!',
+			SELF::FIELD_OUT_OF_RANGE => 'Р’С‹С…РѕРґ Р·Р° РіСЂР°РЅРёС†С‹ РґРёР°РїР°Р·РѕРЅР° РІ РїРѕР»Рµ "{0}"! РњРёРЅРёРјСѓРј: {1} - РњР°РєСЃРёРјСѓРј: {2}!',
 		);
 		
 	}
