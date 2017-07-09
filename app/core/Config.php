@@ -20,6 +20,6 @@
         const DB_PASSWORD = '';
         const DB_PREFIX = 'p_';
 
-
+        const APP_SECRET = '%@zs:ZIP.';
 
     }

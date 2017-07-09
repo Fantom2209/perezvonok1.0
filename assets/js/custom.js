@@ -16,8 +16,26 @@ function goAjax(method, url, data){
         url: url,
         data: data,
         success: function(data) {
-            //var obj = JSON.parse(data);
-            console.log(data);
+            $('.ajax-form .error-box').text('');
+            var obj = JSON.parse(data);
+            switch(obj.code){
+                case 200:
+                    alert('Успешно');
+                    break;
+                case 301:
+                    $(location).attr('href',obj.url);
+                    break;
+                case 500:
+                    if(obj.content.length > 1){
+                        obj.content.forEach(function(item){
+                            $('.ajax-form [name$="'+item.context+'\]"]').closest('div').find('.error-box').text(item.msg);
+                        });
+                    }
+                    else{
+                        $('.ajax-form [name$="'+obj.content.context+'\]"]').closest('div').find('.error-box').text(obj.content.msg);
+                    }
+                    break;
+            }
         }
     });
 }

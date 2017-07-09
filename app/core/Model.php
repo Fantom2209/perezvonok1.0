@@ -21,6 +21,7 @@
 			$this->prefix = Config::DB_PREFIX;
 			$this->table = end(explode(Config::PATH_SEPARATOR,get_class($this)));
 			$this->pdo = new \PDO('mysql:host='.Config::DB_HOST.';dbname='.Config::DB_NAME, Config::DB_USER, Config::DB_PASSWORD);
+			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		}
 				
 		public function __destruct(){
@@ -119,8 +120,13 @@
 		}
 		
 		public function Run($clear = false){
-			echo $this->sql;
-			$this->result->execute($this->operationalData);
+			try{
+                $this->result->execute($this->operationalData);
+            }
+		    catch(\PDOException $e){
+			    echo $e->getMessage();
+            }
+
 			if($clear){
 				$this->Clear();
 			}
@@ -151,12 +157,12 @@
 			return end($x);
 		} 
 		
-		public function GetCount($id = null, $field = 'id'){
+		public function GetCount($val = null, $field = 'id'){
 			$sql = 'SELECT COUNT(`'.$field.'`) AS `count` FROM `'.$this->prefix.$this->table.'`';
 			
-			if($id){
-				$sql .= ' WHERE `id` = ?';
-				$this->SetOperData(array($id));
+			if($val){
+				$sql .= ' WHERE `'.$field.'` = ?';
+				$this->SetOperData(array($val));
 			}
 			
 			return $this->Query($sql)->Run()->GetAll()[0]['count'];
