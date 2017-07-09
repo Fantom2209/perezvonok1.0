@@ -18,14 +18,9 @@
 		protected $error;
 		
 		public function __construct(){
-			$this->prefix = 'p_';		
-			$this->table = end(explode('\\',get_class($this)));
-			$host = 'localhost';
-			$dbname = 'perezvonok';
-			$user = 'root';
-			$pass = '';
-			
-			$this->pdo = new \PDO('mysql:host=localhost;dbname=perezvonok', $user, $pass);
+			$this->prefix = Config::DB_PREFIX;
+			$this->table = end(explode(Config::PATH_SEPARATOR,get_class($this)));
+			$this->pdo = new \PDO('mysql:host='.Config::DB_HOST.';dbname='.Config::DB_NAME, Config::DB_USER, Config::DB_PASSWORD);
 		}
 				
 		public function __destruct(){

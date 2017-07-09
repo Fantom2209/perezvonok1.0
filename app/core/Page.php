@@ -1,6 +1,6 @@
 <?php
 	namespace app\core;
-	
+
 	class Page{
 		
 		protected $view;
@@ -51,13 +51,13 @@
 		}
 		
 		public function Show($controller, $action){
-			
+			echo Config::PATH_LAYOUT;
 			if(!$this->view->HasLayout()){
-				$this->view->Set('layout', __DIR__ . '\\..\\view\\Shared\\mainLayout.php');
+				$this->view->Set('layout', Config::PATH_LAYOUT . 'mainLayout.php');
 			}		
 			
 			if(!$this->view->HasTeamplate()){
-				$this->view->Set('teamplate', __DIR__ . '\\..\\view\\' . $controller . '\\'. $action .'.php');
+				$this->view->Set('template', Config::PATH_VIEW . $controller . Config::PATH_SEPARATOR . $action .'.php');
 				
 			}
 			
