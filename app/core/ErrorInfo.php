@@ -27,9 +27,11 @@
 			
 			return $result;
 		}
-		
-		public function GetMetaErrorItem($code, $data = array(), $field = ''){
-			return array('code' => $code, 'context' => $field, 'msg' => ErrorInfo::GetMessage($code, $data));
+
+
+		// контекст (названия поля и т.д.) всегда передаеться под нулевым индексом
+		public function GetMetaErrorItem($code, $data = array()){
+			return array('code' => $code, 'context' => isset($data[0])?$data[0]:'', 'msg' => ErrorInfo::GetMessage($code, $data));
 		}
 		
 		private static $messages = array(
