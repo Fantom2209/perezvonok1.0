@@ -128,7 +128,8 @@
 		}
 		
 		public function Run($clear = false){
-			try{
+
+		    try{
                 if($this->result){
                     $this->result->execute($this->operationalData);
                 }
@@ -160,7 +161,7 @@
 		}
 		
 		public function GetNext(){
-			return $this->result ? $this->result->fetch(\PDO::FETCH_ASSOC) : null;
+		    return $this->result ? $this->result->fetch(\PDO::FETCH_ASSOC) : null;
 		}
 		
 		public function GetLast(){

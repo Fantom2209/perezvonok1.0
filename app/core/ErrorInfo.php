@@ -18,6 +18,7 @@
 		const DB_QUERY = 10;
         const DB_PREPARE_QUERY = 10;
 
+        const USER_NOT_FOUND = 11;
 		
 		public static function GetMessage($code, $data = array()){
 			if(!isset(self::$messages[$code])){
@@ -54,7 +55,8 @@
             self::FIELD_EMAIL_NOT_FREE => 'Аккаунт с таким email`ом уже существует!',
             self::DB_CONNECT => 'Ошибка при подключении к базе данных!',
             self::DB_QUERY => 'Ошибка при выполнении запроса к базе данных!',
-            self::DB_PREPARE_QUERY => 'Ошибка при формировании запроса к базе данных'
+            self::DB_PREPARE_QUERY => 'Ошибка при формировании запроса к базе данных',
+            self::USER_NOT_FOUND => 'Неверный логин или пароль'
 		);
 		
 	}
