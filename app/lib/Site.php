@@ -13,6 +13,7 @@
         private $response;
 
         public function __construct(){
+            parent::__construct();
             $this->validator = new Validator();
             $this->response = new Ajax();
         }
@@ -39,6 +40,11 @@
                 }
             }
             $this->response->GetResponse();
+        }
+
+        public function Update(){
+
+            $this->Set('content', $this->Param(0) . ' тест обновления');
         }
 
         public function UpdatePost(){

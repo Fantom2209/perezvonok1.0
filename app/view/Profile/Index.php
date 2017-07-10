@@ -13,3 +13,26 @@
     </div>
     <button class="btn btn-primary">Добавить</button>
 </form>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>Сайт</th>
+                <th colspan="3">Операции</th>
+            </tr>
+            <?php foreach($this->Get('sites') as $item):?>
+                  <tr>
+                      <td><?php echo $item['id']?></td>
+                      <td><?php echo $item['name']?></td>
+                      <td><?php echo $item['url']?></td>
+                      <td><a href="<?php echo \app\helpers\Html::ActionPath('Site', 'Update', array($item['id']))?>">Обновить</a></td>
+                      <td><a href="#">Удалить</a></td>
+                      <td><a href="#">Пауза</a></td>
+                  </tr>
+            <?php endforeach;?>
+        </table>
+    </div>
+</div>
