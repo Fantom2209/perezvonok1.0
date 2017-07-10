@@ -206,6 +206,7 @@
 			$this->sql = 'INSERT INTO `'.$this->prefix.$this->table.'` ('.$column.') VALUES ('.$pattern.')';
             $this->PrepareQuery();
 			$this->SetOperData($values);
+
 			return $this;
 		}
 		
@@ -276,7 +277,7 @@
         private function PrepareQuery(){
             try{
                 if($this->pdo){
-                    $this->result = $this->pdo->prepare($this->sql);;
+                    $this->result = $this->pdo->prepare($this->sql);
                 }
                 else{
                     $this->result = null;

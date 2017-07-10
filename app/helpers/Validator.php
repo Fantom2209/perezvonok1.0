@@ -112,4 +112,10 @@
                 $this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_EASY_PASSWORD, array($this->field));
             }
 		}
+
+		private function Check_Link($data){
+            if(!preg_match('/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/u', $data)) {
+                $this->errors[] = ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_NOT_CORRECT, array($this->field));
+            }
+        }
 	}

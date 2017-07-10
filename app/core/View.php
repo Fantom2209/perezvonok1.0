@@ -8,7 +8,7 @@
 		public function __construct(){
 			$this->options = array(
 				'layout' => '',
-				'teamplate' => '',
+				'template' => '',
 			);
 		}
 		
@@ -25,6 +25,6 @@
 		}
 		
 		public function HasTeamplate(){
-			return !empty($this->options['teamplate']);
+			return !empty($this->options['template']);
 		}
 	}

@@ -5,7 +5,7 @@
 	<body>
 		<div>Упппс!</div>
 		<?php 
-			require_once($this->view->Get('teamplate'));
+			require_once($this->view->Get('template'));
 		?>
 	</body>
 </html>

@@ -2,7 +2,7 @@
 	spl_autoload_extensions('.php');
 	spl_autoload_register();
 	
-	use app\helpers\Ajax;
+	/*use app\helpers\Ajax;
 	
 	$x = new Ajax();
 	
@@ -22,7 +22,7 @@
 	else{
 		echo 'Success';
 	}*/
-	
-	
+
+
 	app\core\Application::run();
 	
