@@ -1,7 +1,8 @@
 <?php
 	namespace app\lib;
 	
-	use \app\helpers\Validator;
+	use app\core\Config;
+    use \app\helpers\Validator;
 	use \app\core\ErrorInfo;
 	use \app\data\User;
 	use \app\helpers\Ajax;
@@ -19,6 +20,7 @@
 			else{
                 $data = Validator::CleanKey($data);
                 $user = new User();
+
 			    if($data['password'] !== $data['confirmPass']){
                     $response->SetError(ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_CONFIRM_PASSWORD_NOT_CORRECT,array('confirmPass')));
                 }
@@ -29,11 +31,16 @@
                     $response->SetError(ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_EMAIL_NOT_FREE,array('email')));
                 }
                 else {
-                    $data['idRole'] = 1;
+                    $data['idRole'] = Config::CATEGORY_CLIENT;
                     $data['password'] = $user->HashPassword($data['password']);
                     unset($data['confirmPass']);
                     $user->Insert($data)->Run();
-                    $response->SetRedirect(\app\helpers\Html::ActionPath('Profile','Index'));
+                    if($user->IsSuccess()){
+                        $response->SetRedirect(\app\helpers\Html::ActionPath('Profile','Index'));
+                    }
+                    else{
+                        $response->SetRedirect(\app\helpers\Html::ActionPath('Error','Index', $user->ErrorReporting()));
+                    }
                 }
 			}
 			$response->GetResponse();

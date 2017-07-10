@@ -27,8 +27,8 @@
 			return $this->params[$index];
 		}
 		
-		public function GenerateError($code){
-			$this->Redirect('Error', 'Index', array($code));
+		public function GenerateError($code = array()){
+			$this->Redirect('Error', 'Index', $code);
 		}
 		
 		public function NotFound(){
@@ -37,21 +37,21 @@
 		
 		public function Redirect($controller = 'Home', $action = 'Index', $param = array()){
 			$url = '/' . $controller . '/' . $action . '/';
-			foreach($param as $val){
-				if(!empty($val)){
-					$url .= $val . '/';
-				}
-			}
+            foreach($param as $val){
+                if(!empty($val)){
+                    $url .= $val . '/';
+                }
+            }
 			$this->RedirectUrl($url);
 		}
 		
 		public function RedirectUrl($url = '/Home/Index/'){
-			header('Location: ' . $url); 
+			header('Location: ' . $url);
 			exit(); 
 		}
 		
 		public function Show($controller, $action){
-			echo Config::PATH_LAYOUT;
+
 			if(!$this->view->HasLayout()){
 				$this->view->Set('layout', Config::PATH_LAYOUT . 'mainLayout.php');
 			}		

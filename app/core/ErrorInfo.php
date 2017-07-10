@@ -14,6 +14,10 @@
 		CONST FIELD_LOGIN_NOT_FREE = 7;
 		CONST FIELD_EMAIL_NOT_FREE = 8;
 
+		const DB_CONNECT = 9;
+		const DB_QUERY = 10;
+        const DB_PREPARE_QUERY = 10;
+
 		
 		public static function GetMessage($code, $data = array()){
 			if(!isset(self::$messages[$code])){
@@ -48,6 +52,9 @@
             self::FIELD_CONFIRM_PASSWORD_NOT_CORRECT => 'Пароли не совпадают!',
             self::FIELD_LOGIN_NOT_FREE => 'Аккаунт с таким логином уже существует!',
             self::FIELD_EMAIL_NOT_FREE => 'Аккаунт с таким email`ом уже существует!',
+            self::DB_CONNECT => 'Ошибка при подключении к базе данных!',
+            self::DB_QUERY => 'Ошибка при выполнении запроса к базе данных!',
+            self::DB_PREPARE_QUERY => 'Ошибка при формировании запроса к базе данных'
 		);
 		
 	}

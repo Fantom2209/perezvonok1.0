@@ -1,6 +1,8 @@
 <?php
 	namespace app\core;
-	
+	use \app\helpers\Loger;
+
+
 	class Model{
 		protected $pdo;
 		protected $table;
@@ -15,13 +17,19 @@
 		protected $result;
 		protected $sql;
 		
-		protected $error;
+		protected $errors;
 		
 		public function __construct(){
 			$this->prefix = Config::DB_PREFIX;
 			$this->table = end(explode(Config::PATH_SEPARATOR,get_class($this)));
-			$this->pdo = new \PDO('mysql:host='.Config::DB_HOST.';dbname='.Config::DB_NAME, Config::DB_USER, Config::DB_PASSWORD);
-			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			try {
+                $this->pdo = new \PDO('mysql:host=' . Config::DB_HOST . ';dbname=' . Config::DB_NAME, Config::DB_USER, Config::DB_PASSWORD);
+                $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            }
+            catch(\PDOException $e){
+                Loger::Write($e->getMessage(), $e->getCode());
+                $this->AddError(ErrorInfo::DB_CONNECT);
+            }
 		}
 				
 		public function __destruct(){
@@ -115,16 +123,19 @@
 			}
 						
 			$this->sql .= $bindings . $this->where . $this->orderby . $this->limit;
-			$this->result = $this->pdo->prepare($this->sql);
+			$this->PrepareQuery();
 			return $this;
 		}
 		
 		public function Run($clear = false){
 			try{
-                $this->result->execute($this->operationalData);
+                if($this->result){
+                    $this->result->execute($this->operationalData);
+                }
             }
 		    catch(\PDOException $e){
-			    echo $e->getMessage();
+                Loger::Write($e->getMessage(), $e->getCode());
+                $this->AddError(ErrorInfo::DB_QUERY);
             }
 
 			if($clear){
@@ -145,16 +156,20 @@
 		}
 		
 		public function GetAll(){
-			return $this->result->fetchAll(\PDO::FETCH_ASSOC);
+			return $this->result ? $this->result->fetchAll(\PDO::FETCH_ASSOC) : null;
 		}
 		
 		public function GetNext(){
-			return $this->result->fetch(\PDO::FETCH_ASSOC);
+			return $this->result ? $this->result->fetch(\PDO::FETCH_ASSOC) : null;
 		}
 		
 		public function GetLast(){
-			$x = (array)$this->result->fetchAll(\PDO::FETCH_ASSOC);
-			return end($x);
+			$x = null;
+		    if($this->result) {
+                $x = (array)$this->result->fetchAll(\PDO::FETCH_ASSOC);
+                $x = end($x);
+            }
+			return $x;
 		} 
 		
 		public function GetCount($val = null, $field = 'id'){
@@ -188,7 +203,7 @@
 			}
 			
 			$this->sql = 'INSERT INTO `'.$this->prefix.$this->table.'` ('.$column.') VALUES ('.$pattern.')';
-			$this->result = $this->pdo->prepare($this->sql);
+            $this->PrepareQuery();
 			$this->SetOperData($values);
 			return $this;
 		}
@@ -207,8 +222,8 @@
 				$values[] = $val;
 			}
 			
-			$this->sql = 'UPDATE `'.$this->prefix.$this->table.'` SET ' . $sql . (!empty($wherePattern)? ' WHERE ' . $wherePattern : ''); 
-			$this->result = $this->pdo->prepare($this->sql);
+			$this->sql = 'UPDATE `'.$this->prefix.$this->table.'` SET ' . $sql . (!empty($wherePattern)? ' WHERE ' . $wherePattern : '');
+            $this->PrepareQuery();
 			$this->SetOperData(array_merge($values, $whereData));
 			return $this;
 		}
@@ -221,7 +236,7 @@
 		/* прямой запрос */
 		public function Query($sql){
 			$this->sql = $sql;
-			$this->result = $this->pdo->prepare($this->sql);
+            $this->PrepareQuery();
 			return $this;
 		}
 		
@@ -232,6 +247,46 @@
 		}
 		
 		public function GetLastId(){
-			$this->pdo->lastInsertId();
+			try {
+                $this->pdo->lastInsertId();
+            }
+            catch(\PDOException $e){
+                Loger::Write($e->getMessage(), $e->getCode());
+                if($this->IsSuccess()) {
+                    $this->AddError(ErrorInfo::DB_QUERY);
+                }
+            }
 		}
+
+		public function IsSuccess(){
+		    return count($this->errors) == 0;
+        }
+
+        public function ErrorReporting(){
+		    $e = $this->errors;
+		    $this->errors = array();
+		    return $e;
+        }
+
+        public function AddError($code){
+            $this->errors[] = $code;
+        }
+
+        private function PrepareQuery(){
+            try{
+                if($this->pdo){
+                    $this->result = $this->pdo->prepare($this->sql);;
+                }
+                else{
+                    $this->result = null;
+                }
+            }
+            catch(\PDOException $e){
+                Loger::Write($e->getMessage(), $e->getCode());
+                if($this->IsSuccess()){
+                    $this->AddError(ErrorInfo::DB_PREPARE_QUERY);
+                }
+                $this->result = null;
+            }
+        }
 	}
