@@ -1,16 +1,39 @@
 <?php
 	namespace app\core;
+    use app\data\User;
 
 	class Page{
 		
 		protected $view;
 		protected $data;
 		protected $params;
-		
+
+		protected $userGroups;
+
 		public function __construct(){
 			$this->view = new View();
+			$this->userGroups = array(0,1,2);
 		}
-		
+
+		public function DeleteUserGroup($data = array()){
+		    $new = array();
+		    foreach($this->userGroups as $item){
+                if(in_array($item, $data)){
+                    continue;
+                }
+                $new[] = $item;
+            }
+            $this->userGroups = $new;
+        }
+
+        public function SetUserGroup($data = array()){
+		    $this->userGroups = $data;
+        }
+
+        public function HasAccess(){
+            User::InRole($this->userGroups);
+        }
+
 		public function Get($name){
 			return $this->data[$name];
 		}

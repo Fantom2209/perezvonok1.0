@@ -43,11 +43,16 @@
             setcookie('UserRole', '' );
         }
 
-        public function InRole($role = array()){
-
+        public static function InRole($role = array()){
+            $active = self::ActiveUserInfo('UserRole');
+            return in_array($active ? $active : 0, $role);
         }
 
         public static function IsAuthorized(){
             return $_COOKIE['UserId'] != false;
+        }
+
+        public static function ActiveUserInfo($key){
+            return $_COOKIE[$key];
         }
 	}
