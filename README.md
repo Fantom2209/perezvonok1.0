@@ -1,8 +1,19 @@
 # perezvonok1.0
 
-## Synopsis
+## Установка
 
-At the top of the file there should be a short introduction and/ or overview that explains **what** the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
+Then load using:
+
+```JavaScript
+var ajax = require('ajax');
+```
+
+Or load using a script tag (downloads are available [here](https://component.jit.su/ForbesLindesay/ajax/download))
+
+```html
+<script src="ajax.min.js"></script>
+```
+
 
 ## Code Example
 
