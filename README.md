@@ -1,5 +1,3 @@
-# perezvonok1.0
-
 ## Установка
 
 **Загрузить основные файлы в корень!**
@@ -184,3 +182,71 @@
 
 Последовательность вызовов до построения запроса не имеет значения.
 
+## Обработка форм
+
+**Пример разметки формы**
+
+```php
+	<form action="<?php echo \app\helpers\Html::ActionPath('Account', 'Create')?>" method="POST" class="ajax-form">
+		<div>
+			<input type="text" name="UserData[Login:login]">
+			<div class="error-box"></div>
+		</div>
+		<div>
+			<input type="text" name="UserData[Email:email]">
+			<div class="error-box"></div>
+		</div>
+		<div>
+			<input type="password" name="UserData[Password:password]">
+			<div class="error-box"></div>
+		</div>
+		<div>
+			<input type="password" name="UserData[confirmPass]">
+			<div class="error-box"></div>
+		</div>
+		<button>Регистрация</button>
+	</form>
+```
+
+**Особенности разметки:**
+
+- В `action` задаем путь. Проще всего это сделать через метод Html::ActionPath(...).
+- Для работы с Ajax запросами достаточно форме дать класс `ajax-form`.
+- Для отображения сообщений об ошибках после каждого поля задаем `<div class="error-box"></div>`.
+- Для удобной валидации следует соблюдать следующие правила именования: Основные данные передаем массивом `UserData`. Имя поля состоит из двух частей - `Login:login`(Название правила валидации в Валидаторе:название поля в базе данных). Если поле не требует валидации то записываем его в упрощенном виде - `UserData[confirmPass]`.
+
+Класс валидатор: `\app\helper\Validator.php`
+
+**Реализованые правила валидации**
+
+- `Email` - регулярка.
+- `Phone` - регулярка.
+- `DefaultText` - количество символов от 2 до 255.
+- `Login` - DefaultText + только латинские символы и цифры.
+- `UNumberShort` - число в диапазоне от 1 до 255.
+- `Password` - латинские символы и цифры, количество символов от 7 до 16, как минимум одна буква.
+- `Link` - регулярка.
+		
+При добавлении своих правил следует придерживаться следующего шаблона:
+
+```php
+	private function Check_{Название правила, его используем в форме}($data) {...}
+```
+
+**Пример валидации формы показаной выше**
+
+```php
+	$this->validator = new Validator();
+	
+	$data = $this->Param('UserData'); // получаем данные с формы
+	$this->validator->Validate($data); // запускаем проверку
+	
+	if(!$this->validator->IsValid()){ // если есть поля, которые не соответствуют своему правилу 
+		// обработка ошибки
+	}
+	else{
+		$data = Validator::CleanKey($data); // очистка ключей данных (до 'DefaulText:name' => 'Вася' после 'name' => 'Вася')
+		// работа с валидными данными
+	}
+	...
+```
