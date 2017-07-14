@@ -26,7 +26,7 @@
 Обработка маршрута `http://site.local/user/create/` в зависимости от метода HTTP-запроса(GET/POST):
 
 - GET - в контроллере `User` вызываем метод `Create()` 
-- POST - в контроллере `User` вызываем метод `CreatePost()`
+- POST - в контроллере `User` вызываем метод `CreatePost()`. После POST-запроса представление не возвращаеться, необходимо произвести редирект.   
 
 ## Контроллеры 
 
@@ -62,46 +62,25 @@
 - `Redirect($controller = 'Home', $action = 'Index', $param = array())` - сформировать ссылку и перейти по ней.
 - `RedirectUrl($url = '/Home/Index/')` - перейти по конкретной ссылке.
 
+## Представления 
 
+**Директория:** `\app\view\`
+**Шаблоны(Layout):** `\app\view\Shared\`
+**Именование:** в папке view создаеться папка с именем Контроллера. Внутри папки-контроллера создаються папки с именами как у методов действия.
 
-Then load using:
+По умолчанию используеться шаблон `\app\view\Shared\mainLayout.php` и представление `\app\view\{controller}\{action}.php`. В контроллере можно переопределить оба значения по необходимости.
 
-```JavaScript
-var ajax = require('ajax');
+```php
+	$this->view->Set('layout', __DIR__ . Config::PATH_LAYOUT . 'errorLayout.php');
+	$this->view->Set('template', __DIR__ .  Config::PATH_VIEW . 'otherLayout.php');
+``` 
+
+Получить данные в шаблоне и представлении можно так:
+
+```php
+	<h1><?php echo $this->Get('content');?></h1>
 ```
 
-Or load using a script tag (downloads are available [here](https://component.jit.su/ForbesLindesay/ajax/download))
+## Модель
 
-```html
-<script src="ajax.min.js"></script>
-```
-
-
-## Code Example
-
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
-
-## Motivation
-
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
-
-## Installation
-
-Provide code examples and explanations of how to get the project.
-
-## API Reference
-
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
-
-## Tests
-
-Describe and show how to run the tests with code examples.
-
-## Contributors
-
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
-
-## License
-
-A short snippet describing the license (MIT, Apache, etc.)
 
