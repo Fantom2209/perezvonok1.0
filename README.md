@@ -139,7 +139,11 @@
 			'site' => 'http://maks.com'
 		)
 	)->Run());
-			
+	
+	// Запрос уже сформирован, теперь мы можем выполнять его с другими данными.
+	
+	$user->SetOperData(array('Антон','antom@mail.ru','http://anton.ru/'))->Run();
+	
 	//Обновить запись		
 	$user->Update(
 		array(
@@ -148,6 +152,35 @@
 		), 'id = ?', array(3)				
 	)->Run());
 	
+	//выбрать все записи со всеми столбцами
+	$user->Select()->Build()->run();
 	
+	//указать нужные столбцы
+	$user->Select('id', 'login')->Build()->run();
+	
+	//выборка из двух таблица
+	$user->Select(array('login', 'roleName'))->Binding('LEFT','Role','idRole','id')->Build()->Run();
+	
+	//выборка из двух таблица(при конфликте полей в select передаем подробное описание)
+	$user->Select(array(array('table' => 'p_User', 'field' => 'login'),array('table' => 'p_Role', 'field' => 'name')))->Binding('LEFT','Role','idRole','id')->Build()->Run();
+	
+	//выборка с условием
+	$user->Select()->Where('`id` > ? `and` < ?', array(100, 30))->Build()->Run();
+	
+	//сортировка по убыванию
+	$user->Select()->Where('`id` > ? `and` < ?', array(100, 30))->OrderBy(array('age'), 2)->Build()->Run();
+	
+	//выбрать первые 10 записей
+	$user->Select()->Where('`id` > ? `and` < ?', array(100, 30))->OrderBy(array('age'), 2)->Limit(1,10)->Build()->Run();
+	
+	//получить результат запроса
+	
+	$d = $user->Select()->Build()->Run()->GetNext()); // первая строка
+
+	$d = $user->GetNext(); // второй и т.д.
+	$d = $user->Run()->GetAll(); // для сброса маркера выполнели последний сформированый запрос и выбрали все
+	$d = $user->Run()->GetLast(); // для сброса маркера выполнели последний сформированый запрос и выбрали последнюю строку
 ```
+
+Последовательность вызовов до построения запроса не имеет значения.
 
