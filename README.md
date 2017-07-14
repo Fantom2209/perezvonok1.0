@@ -243,6 +243,7 @@
 	
 	if(!$this->validator->IsValid()){ // если есть поля, которые не соответствуют своему правилу 
 		// обработка ошибки
+		$this->response->SetError(ErrorInfo::GetMetaErrorItem(ErrorInfo::FIELD_EMAIL_NOT_FREE,array('email'))); // подробнее смотреть класс Ajax
 	}
 	else{
 		$data = Validator::CleanKey($data); // очистка ключей данных (до 'DefaulText:name' => 'Вася' после 'name' => 'Вася')
@@ -250,3 +251,68 @@
 	}
 	...
 ```
+
+## Логирование
+
+Файл логов: `\app\tmp\logs\log.txt`
+Логер: `\apt\helpers\Loger.php`
+
+**Писать в лог **
+
+```php
+	Loger::Write('Сообщение', 'Код ошибки, если есть');
+```
+
+## Формирование ответов (Ajax)
+
+Класс: `\app\helpers\Ajax.php`
+
+Все методы динамические:
+
+- `SetFormat($format)` - задать тип контента в ответе (JSON (по умолчанию) - есть|XML - будет|..).
+- `SetError($data)` - пометить ответ как: ошибка.
+- `SetSuccess($data)` - пометить ответ как: успешно.
+- `SetRedirect($url = '/home/index/')` - пометить ответ как: необходим редирект.
+- `GetResponse()` - сформировать ответ.
+
+Формат ответа:
+
+```JSON
+	{`code`:200, `status`:'success'}
+	{`code`:500, `status`:'error', 'content':{'code':12, 'context':'login', 'Поле "login" не может быть пустым'}}
+	{`code`:301, `status`:'redirect', 'url':'\error\index\23\'}
+```
+
+## Ошибки
+
+Класс ошибок: `\app\core\ErrorInfo.php`
+
+Статические методы:
+
+- `GetMetaErrorItem($code, $data = array())` - возвращаем отчет об ошибке в виде `array('code' => $code, 'context' => 'contextName', 'msg' =>'msg')` - контекст всехда записываеться как $data[0].
+- `GetMessage($code, $data = array())` - возвращаем сообщение об ошибке
+
+
+```php
+	self::UNDEFINED_ERROR => 'Произошла неопределенная ошибка!',
+	self::FIELD_EMPTY => 'Поле "{0}" не может быть пустым!',
+	self::FIELD_NOT_CORRECT => 'Поле "{0}" имеет некорректное значение!',
+	self::FIELD_OUT_OF_RANGE_STR => 'Некорректное кол-во символов в поле "{0}"! Минимум: {1} - Максимум: {2}!',
+	self::FIELD_OUT_OF_RANGE => 'Выход за границы диапазона в поле "{0}"! Минимум: {1} - Максимум: {2}!',
+	self::FIELD_EASY_PASSWORD => 'Слишком простой пароль, используйте латинские буквы + цифры!',
+	self::FIELD_CONFIRM_PASSWORD_NOT_CORRECT => 'Пароли не совпадают!',
+	self::FIELD_LOGIN_NOT_FREE => 'Аккаунт с таким логином уже существует!',
+	self::FIELD_EMAIL_NOT_FREE => 'Аккаунт с таким email`ом уже существует!',
+	self::DB_CONNECT => 'Ошибка при подключении к базе данных!',
+	self::DB_QUERY => 'Ошибка при выполнении запроса к базе данных!',
+	self::DB_PREPARE_QUERY => 'Ошибка при формировании запроса к базе данных',
+	self::USER_NOT_FOUND => 'Неверный логин или пароль'
+```
+
+## Ближайшая доработка
+
+- `app\helpers\Email` - класс для отправки email.
+- `app\helpers\Paginator` - класс для формирования постраничного деления.
+- `Подтверждение email` 
+
+
